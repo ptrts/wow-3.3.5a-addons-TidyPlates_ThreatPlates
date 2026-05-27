@@ -861,7 +861,7 @@ local function GetOptions()
 															order = 2,
 															width = "double",
 															disabled = function()
-																return (not db.friendlyClass or db.healthColorChange)
+																return db.healthColorChange
 															end,
 															get = GetValue,
 															set = SetValue,
