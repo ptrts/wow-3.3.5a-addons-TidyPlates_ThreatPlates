@@ -260,6 +260,13 @@ do
 		local db = TidyPlatesThreat.db.profile
 		local style, custom = TidyPlatesThreat.SetStyle(unit)
 
+		if unit and unit.reaction == "FRIENDLY" and unit.type == "PLAYER" and db.cacheClass and unit.guid and not db.cache[unit.name] then
+			local _, class = GetPlayerInfoByGUID(unit.guid)
+			if class then
+				db.cache[unit.name] = class
+			end
+		end
+
 		if custom == true then
 			for k_c, k_v in pairs(db.uniqueSettings.list) do
 				if k_v == "GROUP" then
