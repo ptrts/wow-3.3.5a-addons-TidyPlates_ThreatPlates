@@ -282,6 +282,36 @@ end
 local function OnUpdate(plate, unit)
 	db = TidyPlatesThreat.db.profile
 	local w = plate.widgets
+
+	-- Special per-unit vertical offset
+	local function ApplySpecialNameplateOffset()
+		if not plate or not unit or not unit.name then
+			return
+		end
+
+		local offset = (unit.name == "Hedning") and 200 or 0
+		local anchor_target = plate.extended or plate.visual or plate
+
+		if offset ~= 0 and not anchor_target.tp_original_point then
+			local p, rel, rp, x, y = anchor_target:GetPoint(1)
+			anchor_target.tp_original_point = {p, rel, rp, x or 0, y or 0}
+		end
+
+		if offset ~= 0 and not anchor_target.tp_offset_applied and anchor_target.tp_original_point then
+			local point = anchor_target.tp_original_point
+			anchor_target:ClearAllPoints()
+			anchor_target:SetPoint(point[1], point[2], point[3], point[4], point[5] + offset)
+			anchor_target.tp_offset_applied = true
+		elseif offset == 0 and anchor_target.tp_offset_applied and anchor_target.tp_original_point then
+			local point = anchor_target.tp_original_point
+			anchor_target:ClearAllPoints()
+			anchor_target:SetPoint(point[1], point[2], point[3], point[4], point[5])
+			anchor_target.tp_offset_applied = nil
+			anchor_target.tp_original_point = nil
+		end
+	end
+
+	ApplySpecialNameplateOffset()
 	-- Target Art
 	if db.targetWidget.ON then
 		if not w.TargetArt then
