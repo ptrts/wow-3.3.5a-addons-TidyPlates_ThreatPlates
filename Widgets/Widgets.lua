@@ -290,11 +290,17 @@ local function OnUpdate(plate, unit)
 		end
 
 		local offset = (unit.name == "Hedning") and 200 or 0
-		local anchor_target = plate.extended or plate.visual or plate
+		local anchor_target = plate
+
+		if not anchor_target or type(anchor_target.GetPoint) ~= "function" then
+			return
+		end
 
 		if offset ~= 0 and not anchor_target.tp_original_point then
 			local p, rel, rp, x, y = anchor_target:GetPoint(1)
-			anchor_target.tp_original_point = {p, rel, rp, x or 0, y or 0}
+			if p then
+				anchor_target.tp_original_point = {p, rel, rp, x or 0, y or 0}
+			end
 		end
 
 		if offset ~= 0 and not anchor_target.tp_offset_applied and anchor_target.tp_original_point then
